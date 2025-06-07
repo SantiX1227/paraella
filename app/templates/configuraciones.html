@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Configuraciones{% endblock %}
+
+{% block content %}
+
+<!-- Tabla de Ponderaciones Original -->
+{% if ponderada_df is defined and not ponderada_df.empty %}
+<div class="row justify-content-center mb-5">
+  <div class="col-md-12">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-dark text-white fw-semibold">
+        📈 Tabla de Ponderaciones Original (Ponderada.xlsx)
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered text-center align-middle table-striped">
+            <thead class="table-light">
+              <tr>
+                {% for col in ponderada_df.columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for _, row in ponderada_df.iterrows() %}
+              <tr>
+                {% for col in ponderada_df.columns %}
+                <td>{{ row[col] }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Tabla Editable de Metas por Categoría -->
+<div class="row justify-content-center mb-5">
+  <div class="col-md-12">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white fw-semibold">
+        🎯 Metas por Categoría y Vendedor (Editable)
+      </div>
+      <div class="card-body">
+        <form method="POST">
+          <input type="hidden" name="guardar_categorias" value="1">
+          <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-nowrap">📧 Vendedor</th>
+                  {% for cat in categorias %}
+                  <th class="text-nowrap">{{ cat|capitalize }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for v in vendedores %}
+                <tr>
+                  <td><strong>{{ v }}</strong></td>
+                  {% for cat in categorias %}
+                  <td>
+                    <input type="number" step="0.01" min="0" name="{{ v }}__{{ cat }}"
+                      value="{{ metas_categoria[v][cat] }}"
+                      class="form-control text-end" required>
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="text-end mt-3">
+            <button type="submit" class="btn btn-success">
+              💾 Guardar Metas por Categoría
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla Editable de Ponderaciones -->
+<div class="row justify-content-center mb-5">
+  <div class="col-md-12">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-secondary text-white fw-semibold">
+        🧮 Ponderación por Indicador (Editable)
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('main.guardar_ponderaciones') }}">
+          <input type="hidden" name="guardar_ponderacion_individual" value="1">
+          <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle table-striped">
+              <thead class="table-light">
+                <tr>
+                  <th>📧 Vendedor</th>
+                  {% for col in categorias %}
+                  <th>{{ col }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for vendedor in vendedores %}
+                <tr>
+                  <td><strong>{{ vendedor }}</strong></td>
+                  {% for col in categorias %}
+                  <td>
+                    <input type="number" step="0.01" min="0" name="{{ vendedor }}__{{ col }}"
+                      value="{{ ponderaciones[vendedor][col] }}"
+                      class="form-control text-end" required>
+                  </td>
+                  {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="text-end mt-3">
+            <button type="submit" class="btn btn-secondary">
+              💾 Guardar Ponderación por Indicador
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

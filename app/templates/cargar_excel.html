@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Cargar Excel{% endblock %}
+
+{% block content %}
+<div class="contenedor-carga">
+    <h2>📂 Cargar Archivos Excel</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="archivo">📁 Seleccionar archivos (.xlsx):</label>
+            <input type="file" name="archivo" id="archivo" multiple accept=".xlsx" required>
+        </div>
+
+        <button type="submit" class="btn">📤 Subir Archivos</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Reporte Interactivo{% endblock %}
+
+{% block content %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container py-4">
+  <h2 class="mb-4 text-center">
+    📊 Reporte de <strong>{{ usuario.nombre.upper() }}</strong>
+  </h2>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs nav-justified mb-4" id="reporteTabs" role="tablist">
+    {% for tab in graficos %}
+    <li class="nav-item" role="presentation">
+      <button class="nav-link {% if loop.first %}active{% endif %}" id="{{ tab.id }}-tab"
+              data-bs-toggle="tab" data-bs-target="#{{ tab.id }}" type="button" role="tab">
+        {{ tab.nombre }}
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <div class="tab-content" id="reporteTabsContent">
+    {% for tab in graficos %}
+    <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="{{ tab.id }}" role="tabpanel">
+      <div class="mb-2">
+        <label><strong>📘 Descripción:</strong></label>
+        <p class="text-muted">{{ tab.descripcion }}</p>
+      </div>
+
+      <div class="mb-3">
+        <label for="tipo-{{ tab.id }}"><strong>📊 Tipo de gráfico:</strong></label>
+        <select class="form-select w-auto d-inline-block" onchange="cambiarTipoGrafico('{{ tab.div }}', this.value)">
+          <option value="bar">Barras</option>
+          <option value="line">Líneas</option>
+          <option value="pie">Torta (si aplica)</option>
+          <option value="scatter">Dispersión</option>
+          <option value="box">Boxplot</option>
+          <option value="histogram">Histograma</option>
+        </select>
+      </div>
+
+      <div id="{{ tab.div }}" class="mb-4">
+        {{ tab.html | safe }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- NUEVA SECCIÓN: Tabla de desempeño ponderado -->
+  {% if desempeno_detallado %}
+  <div class="mt-5">
+    <h4 class="mb-3">📈 Detalle del Desempeño Ponderado por Vendedor</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Vendedor</th>
+            {% for cat in ['ventas', 'impactos', 'Finotrato', 'purina', 'monello', 'kitty paw', 'clientes nuevos'] %}
+            <th>{{ cat }}</th>
+            {% endfor %}
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in desempeno_detallado %}
+          <tr>
+            <td>{{ d.Usuario }}</td>
+            {% for cat in ['ventas', 'impactos', 'Finotrato', 'purina', 'monello', 'kitty paw', 'clientes nuevos'] %}
+            <td>{{ d[cat]['ponderado'] }}%</td>
+            {% endfor %}
+            <td><strong>{{ d.total_ponderado }}%</strong></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Botón de descarga -->
+  <div class="text-center mt-5">
+    <a href="{{ url_for('main.exportar_excel') }}" class="btn btn-success btn-lg">
+      📥 Descargar Excel
+    </a>
+  </div>
+</div>
+
+<script>
+function cambiarTipoGrafico(div_id, tipo) {
+  const plotDiv = document.getElementById(div_id);
+  if (!plotDiv || !Plotly) return;
+
+  const data = plotDiv.data;
+  const layout = plotDiv.layout;
+
+  for (let i = 0; i < data.length; i++) {
+    data[i].type = tipo;
+    if (tipo === 'pie') {
+      data[i] = {
+        type: 'pie',
+        labels: data[i].x || [],
+        values: data[i].y || [],
+        hole: 0.3
+      };
+    }
+  }
+
+  Plotly.react(div_id, data, layout);
+}
+</script>
+{% endblock %}

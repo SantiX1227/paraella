@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Procesar Dispositivos{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-info text-white fw-semibold">
+        🧾 Subir archivo de dispositivos
+      </div>
+      <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="archivo" class="form-label">Selecciona un archivo Excel (.xlsx):</label>
+            <input type="file" name="archivo" id="archivo" accept=".xlsx" class="form-control" required>
+          </div>
+          <div class="text-end">
+            <button type="submit" class="btn btn-info">📊 Procesar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

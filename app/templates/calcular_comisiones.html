@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Calcular Comisiones{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">💼 Cargar Archivos para Calcular Comisiones</h2>
+  <p class="text-muted">
+    Sube los archivos necesarios para calcular comisiones por vendedor, ventas por marca e impactos. 
+    Se requiere archivo de facturas, notas crédito y porcentajes de comisión.
+  </p>
+
+  <!-- Mensajes flash -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'warning' if category == 'warning' else 'info' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Formulario de carga -->
+  <form method="POST" enctype="multipart/form-data" class="row g-4">
+    <!-- Archivo de Facturas -->
+    <div class="col-md-6">
+      <label for="facturas" class="form-label">📁 Archivo de Facturas (.xlsx)</label>
+      <input type="file" name="facturas" id="facturas" accept=".xlsx" required class="form-control">
+    </div>
+
+    <!-- Archivo de Notas de Crédito -->
+    <div class="col-md-6">
+      <label for="notas" class="form-label">📄 Archivo de Notas de Crédito (.xlsx)</label>
+      <input type="file" name="notas" id="notas" accept=".xlsx" required class="form-control">
+    </div>
+
+    <!-- Archivo de Porcentaje de Comisión -->
+    <div class="col-md-6">
+      <label for="porcentaje" class="form-label">💰 Porcentajes de Comisión (.xlsx)</label>
+      <input type="file" name="porcentaje" id="porcentaje" accept=".xlsx" required class="form-control">
+    </div>
+
+    <!-- Botón de Envío -->
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary w-100">🔥 Procesar Comisiones</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

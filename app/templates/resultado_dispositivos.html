@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Resultado Dispositivos{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-10">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-success text-white fw-semibold">
+        ✅ Resumen del procesamiento
+      </div>
+      <div class="card-body">
+
+        <h5 class="mb-3">📈 Estados por ocupación</h5>
+        <ul class="list-group mb-4">
+          {% for estado, cantidad in resumen_estado.items() %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ estado }}
+            <span class="badge bg-primary rounded-pill">{{ cantidad }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <h5 class="mb-3">📡 Tipos de dispositivo</h5>
+        <ul class="list-group mb-4">
+          {% for tipo, cantidad in resumen_tipo.items() %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ tipo|capitalize }}
+            <span class="badge bg-secondary rounded-pill">{{ cantidad }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <div class="text-end">
+          <a href="{{ url_for('static', filename='uploads/' + archivo_generado) }}" class="btn btn-outline-success" download>
+            💾 Descargar Excel Procesado
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

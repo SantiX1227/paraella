@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Resultados del Procesamiento{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="text-success mb-3">✅ ¡Procesamiento Exitoso!</h2>
+  <p>El archivo fue procesado y los resultados han sido almacenados en la base de datos. A continuación puedes explorar y editar los resultados o exportarlos.</p>
+
+  <!-- Botones de acción -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="{{ url_for('main.reporte') }}" class="btn btn-outline-secondary">📊 Ir al Reporte</a>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-primary">📈 Ir al Dashboard</a>
+  </div>
+
+  <!-- Tabla resumen -->
+  <h4 class="mt-4">📋 Resumen de Comisiones y Desempeño por Vendedor</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped text-center align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>👤 Vendedor</th>
+          <th>💰 Venta Actual</th>
+          <th>📊 Impactos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fila in tabla_resumen %}
+        <tr>
+          <td><strong>{{ fila['Vendedor'] }}</strong></td>
+          <td>${{ "{:,.0f}".format(fila['VENTA ACTUAL']|default(0)) }}</td>
+          <td>{{ fila['Impactos']|default(0) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tabla editable de ponderaciones (por ahora vacía, placeholder) -->
+  <h4 class="mt-5 bg-primary text-white p-3 rounded-top">
+    🎯 Metas y Ponderaciones <small class="fst-italic">(Editable)</small>
+  </h4>
+  <form action="{{ url_for('main.guardar_ponderaciones') }}" method="POST" class="border rounded-bottom">
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle table-hover mb-0" id="tablaMetas">
+        <thead class="table-light">
+          <tr>
+            <th class="text-primary">📧 Vendedor</th>
+            {% for cat in ['ventas', 'impactos', 'Finotrato', 'purina', 'monello', 'kitty paw', 'clientes nuevos'] %}
+              <th>{{ cat|capitalize }}</th>
+            {% endfor %}
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for vendedor in vendedores|default([]) %}
+          <tr>
+            <td>
+              <input type="text" name="vendedor[]" class="form-control" value="{{ vendedor }}" required>
+            </td>
+            {% for cat in ['ventas', 'impactos', 'Finotrato', 'purina', 'monello', 'kitty paw', 'clientes nuevos'] %}
+              <td>
+                <div class="input-group">
+                  <input type="number" step="0.01" name="{{ vendedor }}__{{ cat }}"
+                        value="{{ ponderaciones.get(vendedor, {}).get(cat, 0) }}"
+                        class="form-control text-center" min="0" required>
+                  <span class="input-group-text">%</span>
+                </div>
+              </td>
+            {% endfor %}
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">🗑️</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-end p-3">
+      <button type="button" class="btn btn-secondary me-2" onclick="agregarFila()">➕ Agregar Fila</button>
+      <button type="submit" class="btn btn-success px-4">💾 Guardar Metas y Ponderaciones</button>
+    </div>
+  </form>
+
+</div>
+
+<script>
+function eliminarFila(btn) {
+  const row = btn.closest('tr');
+  row.remove();
+}
+
+function agregarFila() {
+  const tabla = document.getElementById('tablaMetas').getElementsByTagName('tbody')[0];
+  const nuevaFila = tabla.insertRow();
+  
+  const columnas = ['ventas', 'impactos', 'Finotrato', 'purina', 'monello', 'kitty paw', 'clientes nuevos'];
+  
+  let cell = nuevaFila.insertCell(0);
+  cell.innerHTML = `<input type="text" name="vendedor[]" class="form-control" placeholder="Nuevo vendedor" required>`;
+  
+  for (let i = 0; i < columnas.length; i++) {
+    const col = columnas[i];
+    cell = nuevaFila.insertCell(i + 1);
+    cell.innerHTML = `
+      <input type="number" step="0.01" name="nuevo__${col}" value="0"
+             class="form-control text-center" min="0" required>`;
+  }
+  
+  cell = nuevaFila.insertCell(columnas.length + 1);
+  cell.innerHTML = `<button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">🗑️</button>`;
+}
+</script>
+{% endblock %}

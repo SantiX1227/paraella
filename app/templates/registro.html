@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<style>
+  .password-wrapper {
+    position: relative;
+  }
+  .password-wrapper .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+  }
+</style>
+
+<div class="container py-5" style="max-width: 550px;">
+  <h2 class="text-center mb-4">📝 Crear Cuenta Nueva</h2>
+
+  <form method="POST" class="border p-4 rounded shadow-sm bg-light">
+    {{ form.hidden_tag() }}
+
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">👤 Nombre completo</label>
+      {{ form.nombre(class="form-control", id="nombre") }}
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">📧 Correo electrónico</label>
+      {{ form.email(class="form-control", id="email") }}
+    </div>
+
+    <!-- Contraseña -->
+    <div class="mb-3">
+      <label for="clave" class="form-label">🔒 Contraseña</label>
+      <div class="password-wrapper">
+        {{ form.clave(class="form-control", id="clave", type="password") }}
+        <i class="bi bi-eye toggle-password" onclick="togglePassword('clave', this)"></i>
+      </div>
+    </div>
+
+    <!-- Confirmar Contraseña -->
+    <div class="mb-3">
+      <label for="confirmar_clave" class="form-label">🔒 Confirmar Contraseña</label>
+      <div class="password-wrapper">
+        {{ form.confirmar_clave(class="form-control", id="confirmar_clave", type="password") }}
+        <i class="bi bi-eye toggle-password" onclick="togglePassword('confirmar_clave', this)"></i>
+      </div>
+    </div>
+
+    <!-- Botón de registro -->
+    <div class="d-grid">
+      {{ form.submit(class="btn btn-primary") }}
+    </div>
+  </form>
+
+  <p class="text-center mt-3 text-muted">
+    ¿Ya tienes cuenta? <a href="{{ url_for('main.login') }}">Inicia sesión aquí</a>
+  </p>
+</div>
+
+<script>
+function togglePassword(inputId, iconEl) {
+  const input = document.getElementById(inputId);
+  const isPassword = input.type === "password";
+  input.type = isPassword ? "text" : "password";
+  iconEl.classList.toggle('bi-eye');
+  iconEl.classList.toggle('bi-eye-slash');
+}
+</script>
+{% endblock %}

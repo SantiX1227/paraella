@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold">👋 ¡Bienvenido {{ usuario.nombre.upper() }}!</h1>
+    <p class="lead">Gestiona tus datos de ventas, comisiones y desempeño con facilidad.</p>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+
+    <!-- Fila 1 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">📂 Calcular Comisiones</h5>
+          <p class="card-text">Sube archivos Excel de facturación y calcula automáticamente comisiones por vendedor y categoría.</p>
+          <a href="{{ url_for('main.calcular_comisiones') }}" class="btn btn-outline-primary w-100">Ir a Cálculo</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">📊 Reportes Generales</h5>
+          <p class="card-text">Visualiza ventas, impactos y comisiones con gráficas interactivas y tablas detalladas.</p>
+          <a href="{{ url_for('main.reporte') }}" class="btn btn-outline-success w-100">Ver Reporte</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">📈 Desempeño Ponderado</h5>
+          <p class="card-text">Evalúa el rendimiento total de cada vendedor según metas, ventas y ponderadores clave.</p>
+          <a href="{{ url_for('main.reporte') }}" class="btn btn-outline-warning w-100">Ver Desempeño</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila 2 -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">📥 Exportar Reporte</h5>
+          <p class="card-text">Descarga el archivo Excel con todos los datos analizados.</p>
+          <a href="{{ url_for('main.exportar_excel') }}" class="btn btn-outline-secondary w-100">Descargar Excel</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">⚙️ Configurar Metas</h5>
+          <p class="card-text">Edita las metas asignadas a cada vendedor y ajusta tus objetivos estratégicos.</p>
+          <a href="{{ url_for('main.configuraciones') }}" class="btn btn-outline-dark w-100">Ir a Configuración</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100 border-0">
+        <div class="card-body text-center">
+          <h5 class="card-title">🔒 Cerrar Sesión</h5>
+          <p class="card-text">Finaliza tu sesión y vuelve al inicio de forma segura.</p>
+          <a href="{{ url_for('main.logout') }}" class="btn btn-outline-danger w-100">Cerrar Sesión</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
